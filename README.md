@@ -2,7 +2,7 @@
 
 Compares deployed cloud resources (exported as JSON) against IaC declarations (also JSON) and produces a structured drift report. Each cloud resource gets one entry in the report with a state of Match, Modified, or Missing, and a ChangeLog listing every differing property when the state is Modified.
 
-Matching is done by id first, name as a fallback. Comparison is recursive, it handles arbitrarily nested objects and arrays, reporting changes as dotted paths (tags.Owner, subnets[1].cidr_block).
+Matching is done by id first, name as a fallback. Comparison is recursive; it handles arbitrarily nested objects and arrays, reporting changes as dotted paths (tags.Owner, subnets[1].cidr_block).
 
 The bonus Docker setup spins up LocalStack, runs the analysis against the example files, and optionally uploads the report to a local S3 bucket.
 
@@ -45,7 +45,7 @@ report = analyzer.analyze()
 
 ## Input format
 
-Both files are JSON arrays of resource objects. Resources need at least an `id` or `name` field for matching — `id` is preferred and checked first.
+Both files are JSON arrays of resource objects. Resources need at least an `id` or `name` field for matching `id` is preferred and checked first.
 
 ## Output format
 
@@ -109,6 +109,6 @@ pytest test_analyzer.py -v
 
 ## Notes
 
-- Array comparison is index-based, so reordering array elements (e.g. security group rules) shows up as changes.
+- Array comparison is index-based, so reordering array elements (e.g., security group rules) shows up as changes.
 - Resources with neither `id` nor `name` are indexed by position and won't match reliably.
-- Both input files must be JSON arrays — a top-level object will raise a `ValueError`.
+- Both input files must be JSON arrays; a top-level object will raise a `ValueError`.
