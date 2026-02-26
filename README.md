@@ -68,9 +68,9 @@ One entry per cloud resource:
 
 **State values:**
 
-- `Match` — resource found in IaC and all properties are identical
-- `Modified` — resource found in IaC but has differences (see ChangeLog)
-- `Missing` — resource exists in cloud but not in IaC
+- `Match` resource found in IaC and all properties are identical
+- `Modified` resource found in IaC but has differences (see ChangeLog)
+- `Missing` resource exists in cloud but not in IaC
 
 `ChangeLog` is empty when state is `Match` or `Missing`. Property paths use dot notation for nested fields (`tags.Owner`) and bracket notation for arrays (`subnets[1].cidr_block`).
 
