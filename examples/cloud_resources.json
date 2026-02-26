@@ -1,0 +1,82 @@
+[
+  {
+    "id": "vpc-12345",
+    "name": "production-vpc",
+    "type": "VPC",
+    "region": "us-east-1",
+    "cidr_block": "10.0.0.0/16",
+    "enable_dns_hostnames": true,
+    "enable_dns_support": true,
+    "tags": {
+      "Environment": "Production",
+      "Owner": "Platform Team",
+      "CostCenter": "Engineering"
+    },
+    "subnets": [
+      {
+        "id": "subnet-001",
+        "name": "public-subnet-1a",
+        "cidr_block": "10.0.1.0/24",
+        "availability_zone": "us-east-1a",
+        "tags": {
+          "Type": "Public"
+        }
+      },
+      {
+        "id": "subnet-002",
+        "name": "private-subnet-1b",
+        "cidr_block": "10.0.2.0/24",
+        "availability_zone": "us-east-1b",
+        "tags": {
+          "Type": "Private"
+        }
+      }
+    ],
+    "security_groups": [
+      {
+        "id": "sg-12345",
+        "name": "web-sg",
+        "description": "Security group for web tier",
+        "ingress_rules": [
+          {
+            "protocol": "tcp",
+            "from_port": 80,
+            "to_port": 80,
+            "cidr_blocks": ["0.0.0.0/0"]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "db-instance-001",
+    "name": "production-database",
+    "type": "RDS",
+    "engine": "mysql",
+    "version": "8.0.35",
+    "instance_class": "db.t3.large",
+    "allocated_storage": 100,
+    "backup_retention_days": 30,
+    "multi_az": true,
+    "publicly_accessible": false,
+    "tags": {
+      "Environment": "Production",
+      "Owner": "Data Team"
+    }
+  },
+  {
+    "id": "s3-bucket-001",
+    "name": "application-assets",
+    "type": "S3",
+    "region": "us-east-1",
+    "versioning_enabled": true,
+    "encryption": {
+      "enabled": true,
+      "algorithm": "AES256"
+    },
+    "tags": {
+      "Environment": "Production",
+      "Purpose": "Static Assets"
+    }
+  }
+]

@@ -1,0 +1,78 @@
+services:
+  # LocalStack service provides local AWS emulation including S3
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      # S3 API endpoint (all LocalStack services share this port in v2+)
+      - "4566:4566"
+    environment:
+      # Services to emulate (only S3 for this setup)
+      - SERVICES=s3
+      # Debug mode
+      - DEBUG=1
+    volumes:
+      # Mount Docker socket for local development
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Initialization script volume (optional)
+      - ./init-localstack.sh:/docker-entrypoint-initaws.d/init-localstack.sh
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  # Analyzer container with S3 integration
+  analyzer:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: cloud-iac-analyzer
+    depends_on:
+      localstack:
+        condition: service_healthy
+    environment:
+      # AWS credentials for LocalStack
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+      # LocalStack endpoint
+      - AWS_ENDPOINT_URL=http://localstack:4566
+    volumes:
+      # Mount input/output directories
+      - ../examples:/app/examples
+      - ../output:/app/output
+    command: examples/cloud_resources.json examples/iac_resources.json output/report.json
+
+  # Optional: S3 uploader service to push reports to S3
+  s3-uploader:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: s3-uploader
+    depends_on:
+      localstack:
+        condition: service_healthy
+      analyzer:
+        # Wait for the analyzer to finish writing the report before uploading
+        condition: service_completed_successfully
+    environment:
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ENDPOINT_URL=http://localstack:4566
+    volumes:
+      - ../output:/app/output
+      - ./upload-to-s3.py:/app/upload-to-s3.py
+    # Override the Dockerfile ENTRYPOINT so the uploader script runs directly
+    entrypoint: ["python", "/app/upload-to-s3.py"]
+    profiles:
+      - upload
+
+volumes:
+  localstack_volume:
+
+networks:
+  default:
+    name: analyzer-network

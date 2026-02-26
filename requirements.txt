@@ -1,0 +1,19 @@
+# Cloud-to-IaC Resource Analyzer Dependencies
+
+# Core dependencies
+python-json-logger==2.0.7  # For structured JSON logging
+
+# AWS/S3 support (for bonus Docker feature)
+boto3==1.28.85
+botocore==1.31.85
+
+# Development and testing
+pytest==7.4.3
+pytest-cov==4.1.0
+black==23.12.1
+flake8==6.1.0
+mypy==1.7.1
+
+# Documentation
+sphinx==7.2.6
+sphinx-rtd-theme==2.0.0

@@ -1,0 +1,245 @@
+[
+  {
+    "CloudResourceItem": {
+      "id": "vpc-12345",
+      "name": "production-vpc",
+      "type": "VPC",
+      "region": "us-east-1",
+      "cidr_block": "10.0.0.0/16",
+      "enable_dns_hostnames": true,
+      "enable_dns_support": true,
+      "tags": {
+        "Environment": "Production",
+        "Owner": "Platform Team",
+        "CostCenter": "Engineering"
+      },
+      "subnets": [
+        {
+          "id": "subnet-001",
+          "name": "public-subnet-1a",
+          "cidr_block": "10.0.1.0/24",
+          "availability_zone": "us-east-1a",
+          "tags": {
+            "Type": "Public"
+          }
+        },
+        {
+          "id": "subnet-002",
+          "name": "private-subnet-1b",
+          "cidr_block": "10.0.2.0/24",
+          "availability_zone": "us-east-1b",
+          "tags": {
+            "Type": "Private"
+          }
+        }
+      ],
+      "security_groups": [
+        {
+          "id": "sg-12345",
+          "name": "web-sg",
+          "description": "Security group for web tier",
+          "ingress_rules": [
+            {
+              "protocol": "tcp",
+              "from_port": 80,
+              "to_port": 80,
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "IacResourceItem": {
+      "id": "vpc-12345",
+      "name": "production-vpc",
+      "type": "VPC",
+      "region": "us-east-1",
+      "cidr_block": "10.0.0.0/16",
+      "enable_dns_hostnames": true,
+      "enable_dns_support": true,
+      "tags": {
+        "Environment": "Production",
+        "Owner": "Platform Team",
+        "CostCenter": "Engineering",
+        "ManagedBy": "Terraform"
+      },
+      "subnets": [
+        {
+          "id": "subnet-001",
+          "name": "public-subnet-1a",
+          "cidr_block": "10.0.1.0/24",
+          "availability_zone": "us-east-1a",
+          "tags": {
+            "Type": "Public"
+          }
+        },
+        {
+          "id": "subnet-002",
+          "name": "private-subnet-1b",
+          "cidr_block": "10.0.3.0/24",
+          "availability_zone": "us-east-1b",
+          "tags": {
+            "Type": "Private",
+            "Tier": "Database"
+          }
+        }
+      ],
+      "security_groups": [
+        {
+          "id": "sg-12345",
+          "name": "web-sg",
+          "description": "Security group for web tier",
+          "ingress_rules": [
+            {
+              "protocol": "tcp",
+              "from_port": 80,
+              "to_port": 80,
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ]
+            },
+            {
+              "protocol": "tcp",
+              "from_port": 443,
+              "to_port": 443,
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "State": "Modified",
+    "ChangeLog": [
+      {
+        "KeyName": "subnets[1].cidr_block",
+        "CloudValue": "10.0.2.0/24",
+        "IacValue": "10.0.3.0/24"
+      },
+      {
+        "KeyName": "subnets[1].tags.Tier",
+        "CloudValue": null,
+        "IacValue": "Database"
+      },
+      {
+        "KeyName": "tags.ManagedBy",
+        "CloudValue": null,
+        "IacValue": "Terraform"
+      },
+      {
+        "KeyName": "security_groups[0].ingress_rules[1]",
+        "CloudValue": null,
+        "IacValue": {
+          "protocol": "tcp",
+          "from_port": 443,
+          "to_port": 443,
+          "cidr_blocks": [
+            "0.0.0.0/0"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "CloudResourceItem": {
+      "id": "db-instance-001",
+      "name": "production-database",
+      "type": "RDS",
+      "engine": "mysql",
+      "version": "8.0.35",
+      "instance_class": "db.t3.large",
+      "allocated_storage": 100,
+      "backup_retention_days": 30,
+      "multi_az": true,
+      "publicly_accessible": false,
+      "tags": {
+        "Environment": "Production",
+        "Owner": "Data Team"
+      }
+    },
+    "IacResourceItem": {
+      "id": "db-instance-001",
+      "name": "production-database",
+      "type": "RDS",
+      "engine": "mysql",
+      "version": "8.0.36",
+      "instance_class": "db.t3.xlarge",
+      "allocated_storage": 100,
+      "backup_retention_days": 30,
+      "multi_az": true,
+      "publicly_accessible": false,
+      "tags": {
+        "Environment": "Production",
+        "Owner": "Data Team",
+        "BackupPolicy": "Daily"
+      }
+    },
+    "State": "Modified",
+    "ChangeLog": [
+      {
+        "KeyName": "version",
+        "CloudValue": "8.0.35",
+        "IacValue": "8.0.36"
+      },
+      {
+        "KeyName": "tags.BackupPolicy",
+        "CloudValue": null,
+        "IacValue": "Daily"
+      },
+      {
+        "KeyName": "instance_class",
+        "CloudValue": "db.t3.large",
+        "IacValue": "db.t3.xlarge"
+      }
+    ]
+  },
+  {
+    "CloudResourceItem": {
+      "id": "s3-bucket-001",
+      "name": "application-assets",
+      "type": "S3",
+      "region": "us-east-1",
+      "versioning_enabled": true,
+      "encryption": {
+        "enabled": true,
+        "algorithm": "AES256"
+      },
+      "tags": {
+        "Environment": "Production",
+        "Purpose": "Static Assets"
+      }
+    },
+    "IacResourceItem": {
+      "id": "s3-bucket-001",
+      "name": "application-assets",
+      "type": "S3",
+      "region": "us-east-1",
+      "versioning_enabled": false,
+      "encryption": {
+        "enabled": true,
+        "algorithm": "AES256"
+      },
+      "tags": {
+        "Environment": "Production",
+        "Purpose": "Static Assets",
+        "Compliance": "HIPAA"
+      }
+    },
+    "State": "Modified",
+    "ChangeLog": [
+      {
+        "KeyName": "versioning_enabled",
+        "CloudValue": true,
+        "IacValue": false
+      },
+      {
+        "KeyName": "tags.Compliance",
+        "CloudValue": null,
+        "IacValue": "HIPAA"
+      }
+    ]
+  }
+]
