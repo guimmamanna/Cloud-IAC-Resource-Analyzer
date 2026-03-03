@@ -121,6 +121,8 @@ class ResourceAnalyzer:
             if iac_resource is not None:
                 item["IacResourceItem"] = iac_resource
                 item["State"], item["ChangeLog"] = self._compare_resources(cloud_resource, iac_resource)
+            else:
+                item["IacResourceItem"] = {}
 
             self.analysis_report.append(item)
 
